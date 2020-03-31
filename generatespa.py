@@ -38,7 +38,7 @@ class Municipio:
         self.pagamentos = []
 
     def adicionarPagamento(self, d, v):
-        self.pagamentos.append(Pagamento(d, v))
+        self.pagamentos.append(v)
 
     def __str__(self):
         return "{} ({}) ({:.5f}, {:.5f}) [{} pagtos]".format(
@@ -66,13 +66,22 @@ def main():
     pbf_dir = os.path.join(data_dir, "pbf")
 
     os.chdir(pbf_dir)
-    for f in glob.glob('*'):
+    for f in sorted(glob.glob('*')):
         parse_pbf(f, municipios)
 
     # limit municipios to TOP_LIMIT
-    ms = sorted(municipios.values(), key=lambda m: sum(p.valor for p in m.pagamentos), reverse=True)
+    ms = sorted(municipios.values(), key=lambda m: sum(m.pagamentos), reverse=True)
+
+    ms = ms[:TOP_LIMIT]
+
+    # check length of pagamentos are all equal
+    lenpagtos = set()
+    for m in ms:
+        lenpagtos.add(len(m.pagamentos))
+
+    assert len(lenpagtos) == 1
     
-    return ms[:TOP_LIMIT]
+    return ms
 
 
 def parse_kml_data(kml_file, municipios):
