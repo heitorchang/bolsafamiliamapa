@@ -13,7 +13,7 @@ import csv
 from pykml import parser
 
 MUNICIPIOS_KML = "localidades.kml"
-PICKLED_MUNICIPIOS = "c:/Users/heitor/Desktop/code/bolsafamiliamapa/data/municipios.pickle"
+TOP_LIMIT = 100  # quantos municipios incluir
 
 class Pagamento:
     # representa um pagamento e a data dela
@@ -69,7 +69,10 @@ def main():
     for f in glob.glob('*'):
         parse_pbf(f, municipios)
 
-    return municipios
+    # limit municipios to TOP_LIMIT
+    ms = sorted(municipios.values(), key=lambda m: sum(p.valor for p in m.pagamentos), reverse=True)
+    
+    return ms[:TOP_LIMIT]
 
 
 def parse_kml_data(kml_file, municipios):
@@ -107,13 +110,6 @@ def parse_pbf(pbf_file, municipios):
         print("{} municipios nao encontrados.".format(len(not_found)))
     
 if __name__ == '__main__':
-    # print("Generating SPA")
-    # municipios = main()
+    print("Generating SPA")
+    municipios = main()
 
-    # load pickle
-    try:
-        dbfile = open(PICKLED_MUNICIPIOS, 'rb')
-        municipios = pickle.load(dbfile)
-        dbfile.close()
-    except:
-        print("Error unpickling")
