@@ -1,4 +1,4 @@
-# Gerar uma pagina com OpenStreetMap contendo dados de
+# Gerar uma pagina com OpenLayers contendo dados de
 # http://www.dados.gov.br/dataset/bolsa-familia-misocial
 # e dados geograficos de
 # ftp://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/localidades
