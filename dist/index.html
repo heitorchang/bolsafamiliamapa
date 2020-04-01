@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css" type="text/css">
+        <style>
+         html, body, .map {
+             margin: 0;
+             height: 100%;
+             width: 100%;
+         }
+        </style>
+
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script>
+        <title>Repasses mensais à Bolsa Família</title>
+    </head>
+    <body>
+        <h3>Repasses mensais à Bolsa Família (100 maiores municípios beneficiados)</h3>
+        <div id="map" class="map">
+        </div>
+        <script src="summary2019.js"></script>
+        <script>
+         // scales the size of each circle
+         const SIZE_FACTOR = 10;  
+         var vectorSource = new ol.source.Vector({
+           projection: "EPSG:4326"
+         });
+         
+         var map = new ol.Map({
+           target: 'map',
+           layers: [
+             new ol.layer.Tile({
+               source: new ol.source.OSM()
+             }),
+             new ol.layer.Vector({
+               source: vectorSource,
+               style: [
+                 new ol.style.Style({
+                   stroke: new ol.style.Stroke({
+                     color: 'green',
+                     width: 1
+                   }),
+                   fill: new ol.style.Fill({
+                     color: 'rgba(0, 255, 0, 0.2)'
+                   })
+                 })
+               ]
+             })
+           ],
+           view: new ol.View({
+             // Brasilia
+             center: ol.proj.fromLonLat([-47.8879054780313, -15.794087361891]),
+             zoom: 4
+           })
+         });
+         
+         function drawCircle(lon, lat, size) {
+           var ctr = ol.proj.fromLonLat([lon, lat]);
+           vectorSource.addFeature(new ol.Feature(new ol.geom.Circle(ctr, size)));
+         }
+
+         function clearFeatures() {
+           vectorSource.clear();
+         }
+         
+         for (const m of municipios) {
+           // sqrt is taken to convert a scalar to area
+           drawCircle(m[1], m[2], Math.sqrt(m[3][0]) * SIZE_FACTOR);
+         }
+         
+        </script>
+    </body>
+</html>
