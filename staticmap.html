@@ -16,6 +16,7 @@
         <h2>Map</h2>
         <div id="map" class="map">
         </div>
+        <script src="summary2019.js"></script>
         <script>
          var vectorSource = new ol.source.Vector({
            projection: "EPSG:4326"
@@ -44,7 +45,7 @@
            ],
            view: new ol.View({
              center: ol.proj.fromLonLat([-46.5703, -23.5673]),
-             zoom: 9
+             zoom: 4
            })
          });
          
@@ -57,7 +58,7 @@
            vectorSource.clear();
          }
          
-         
+         drawCircle(-46.5703831821127, -23.5673865, 120000);
         </script>
     </body>
 </html>

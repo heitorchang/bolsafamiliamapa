@@ -14,6 +14,7 @@ from pykml import parser
 
 MUNICIPIOS_KML = "localidades.kml"
 TOP_LIMIT = 100  # quantos municipios incluir
+SUMMARY_FILE = "summary2019.js"
 
 class Pagamento:
     # representa um pagamento e a data dela
@@ -81,7 +82,17 @@ def main():
 
     assert len(lenpagtos) == 1
     
-    return ms
+    json = jsonify(ms)
+
+    try:
+        json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    except NameError:
+        json_path = "c:/Users/heitor/Desktop/code/bolsafamiliamapa/" + SUMMARY_FILE
+
+    with open(json_path, 'w', encoding="utf-8") as jsonfile:
+        print(json, file=jsonfile)
+        
+    print("JSON written.")
 
 
 def parse_kml_data(kml_file, municipios):
@@ -117,8 +128,15 @@ def parse_pbf(pbf_file, municipios):
                     print("Municipio {} nao encontrado. Valor: {}".format(row['ibge'], float(row['valor_repassado_bolsa_familia'])))
                     not_found.add(row['ibge'])
         print("{} municipios nao encontrados.".format(len(not_found)))
-    
+
+        
+def jsonify(municipios):
+    json = "var municipios = ["
+    json += ",\n".join(['["{}", {}, {}, {}]'.format(m.nome, m.lng, m.lat, m.pagamentos) for m in municipios])        
+    json += "];"
+    return json
+
+
 if __name__ == '__main__':
     print("Generating SPA")
-    municipios = main()
-
+    json = main()
