@@ -17,11 +17,29 @@
         <div id="map" class="map">
         </div>
         <script>
+         var vectorSource = new ol.source.Vector({
+           projection: "EPSG:4326"
+         });
+         
          var map = new ol.Map({
            target: 'map',
            layers: [
              new ol.layer.Tile({
                source: new ol.source.OSM()
+             }),
+             new ol.layer.Vector({
+               source: vectorSource,
+               style: [
+                 new ol.style.Style({
+                   stroke: new ol.style.Stroke({
+                     color: 'green',
+                     width: 2
+                   }),
+                   fill: new ol.style.Fill({
+                     color: 'rgba(0, 255, 0, 0.2)'
+                   })
+                 })
+               ]
              })
            ],
            view: new ol.View({
@@ -29,6 +47,17 @@
              zoom: 9
            })
          });
+         
+         function drawCircle(lon, lat, size) {
+           var ctr = ol.proj.fromLonLat([lon, lat]);
+           vectorSource.addFeature(new ol.Feature(new ol.geom.Circle(ctr, size)));
+         }
+
+         function clearFeatures() {
+           vectorSource.clear();
+         }
+         
+         
         </script>
     </body>
 </html>
